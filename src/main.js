@@ -1,5 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const size = {
   width: window.innerWidth,
@@ -35,11 +36,18 @@ const camera = new THREE.PerspectiveCamera(75, size.width / size.height, 0.1, 10
 // const camera = new THREE.OrthographicCamera(-2, 2, 2, -2, 0.1, 100);
 
 camera.position.z = 3;
+camera.lookAt(0,0,0);
 // renderer
 
 const canvas = document.querySelector('#webgl');
+
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(size.width, size.height);
+
+
+const controls = new OrbitControls( camera, renderer.domElement );
+controls.update();
+
 
 window.addEventListener('resize', () => {
   // update size
@@ -60,7 +68,7 @@ window.addEventListener('resize', () => {
 
 function animate() {
   timer.update();
-
+  controls.update();
   const delta  = timer.getDelta();
   cube.rotation.x += delta ;
   cube.rotation.y += delta ;
