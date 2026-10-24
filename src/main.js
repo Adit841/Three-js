@@ -21,6 +21,9 @@ const timer = new THREE.Timer();
 // geometry
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 
+// const geometry = new THREE.BufferGeometry();
+
+
 // material 
 const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 
