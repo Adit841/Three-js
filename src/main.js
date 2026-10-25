@@ -10,6 +10,17 @@ const gui = new GUI();
 const textureLoader = new THREE.TextureLoader();
 const texture = textureLoader.load("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNwou7S3Cic9U7Od3cS_84ethiAD6t2LvVJ8PGtN8M8w&s=10");
 
+const clothTexture = textureLoader.load(
+  "/texture.jpg",
+  () => {
+    console.log("Texture loaded successfully");
+  },
+  undefined,
+  (error) => {
+    console.error("Texture failed to load:", error);
+  }
+);
+
 const property = {
   color: 0xff0000,
 }
@@ -24,7 +35,7 @@ const scene = new THREE.Scene();
 
 // const clock = new THREE.Clock();
 
-const timer = new THREE.Timer();
+const timer =  new THREE.Clock();
 
 // 3D-object - mesh
 
@@ -50,7 +61,7 @@ const geometry = new THREE.BoxGeometry(1, 1, 1);
 
 
 // material
-const material = new THREE.MeshBasicMaterial({ map: texture, color: property.color });
+const material = new THREE.MeshBasicMaterial({ map: clothTexture });
 
 // mesh
 const cube = new THREE.Mesh(geometry, material);
@@ -119,7 +130,7 @@ window.addEventListener("resize", () => {
 });
 
 function animate() {
-  timer.update();
+  // timer.update();
   controls.update();
   const delta = timer.getDelta();
   cube.rotation.x += delta;
