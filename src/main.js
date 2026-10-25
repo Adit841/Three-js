@@ -7,6 +7,13 @@ import GUI from "lil-gui";
 
 const gui = new GUI();
 
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNwou7S3Cic9U7Od3cS_84ethiAD6t2LvVJ8PGtN8M8w&s=10");
+
+const property = {
+  color: 0xff0000,
+}
+
 const size = {
   width: window.innerWidth,
   height: window.innerHeight,
@@ -43,14 +50,36 @@ const geometry = new THREE.BoxGeometry(1, 1, 1);
 
 
 // material
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const material = new THREE.MeshBasicMaterial({ map: texture, color: property.color });
 
 // mesh
 const cube = new THREE.Mesh(geometry, material);
-gui.add(cube.position, "x").min(-3).max(3).step(0.01).name("cubeX");
-gui.add(cube.position, "y").min(-3).max(3).step(0.01).name("cubeY");
-gui.add(cube.position, "z").min(-3).max(3).step(0.01).name("cubeZ");  
-scene.add(cube);
+// gui.add(cube.position, "x").min(-3).max(3).step(0.01).name("cubeX");
+// gui.add(cube.position, "y").min(-3).max(3).step(0.01).name("cubeY");
+// gui.add(cube.position, "z").min(-3).max(3).step(0.01).name("cubeZ");  
+scene.add(cube); 
+
+// gui.add(cube, "visible");
+
+// gui.add(material, "wireframe");
+
+// gui.addColor(property, "color").onChange(() => {
+//   material.color.set(property.color);
+// });
+
+const positionFolder = gui.addFolder("position");
+const rotationFolder = gui.addFolder("rotation");
+
+
+positionFolder.add(cube.position, "x").min(-3).max(3).step(0.01).name("cubeX");
+positionFolder.add(cube.position, "y").min(-3).max(3).step(0.01).name("cubeY");
+positionFolder.add(cube.position, "z").min(-3).max(3).step(0.01).name("cubeZ");  
+
+rotationFolder.add(cube.rotation, "x").min(-3).max(3).step(0.01).name("cubeX");
+rotationFolder.add(cube.rotation, "y").min(-3).max(3).step(0.01).name("cubeY");
+rotationFolder.add(cube.rotation, "z").min(-3).max(3).step(0.01).name("cubeZ"); 
+
+
 
 // camera
 
