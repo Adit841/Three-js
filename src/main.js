@@ -78,30 +78,28 @@ gltfLoader.load(
     );
     console.log("Animation map:", animations);
 
-
     let currentAction = null;
-    function playAnimation(name){
+    function playAnimation(name) {
       const clip = animations[name];
-      if(!clip){
+      if (!clip) {
         console.warn(`Animation "${name}" not found.`);
         return;
       }
-      const newAction  = mixer.clipAction(clip);
-      if(currentAction == newAction){
-        return ;
+      const newAction = mixer.clipAction(clip);
+      if (currentAction == newAction) {
+        return;
       }
       newAction.reset();
       newAction.play();
       newAction.setEffectiveTimeScale(1);
       newAction.setEffectiveWeight(1);
-      
-      if(currentAction){
+
+      if (currentAction) {
         currentAction.crossFadeTo(newAction, 0.5, false);
       }
 
       currentAction = newAction;
       console.log(`Playing animation: ${name}`);
-
     }
     playAnimation("idle");
 
@@ -134,6 +132,37 @@ gltfLoader.load(
   },
 );
 
+const cameraRotationSpeed = 0.5; // Adjust this value to control the rotation speed
+window.addEventListener("keydown", (event) => {
+  switch (event.key) {
+    case "ArrowLeft":
+      camera.position.applyAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        cameraRotationSpeed,
+      );
+      break;
+    case "ArrowRight":
+      camera.position.applyAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        -cameraRotationSpeed,
+      );
+      break;
+      case "ArrowUp":
+      camera.position.applyAxisAngle(
+        new THREE.Vector3(1, 0, 0),
+        cameraRotationSpeed,
+      );
+      break;
+    case "ArrowDown":
+      camera.position.applyAxisAngle(
+        new THREE.Vector3(1, 0, 0),
+        -cameraRotationSpeed,
+      );
+      break;
+    default:
+      break;
+  }
+});
 // const clock = new THREE.Clock();
 
 const timer = new THREE.Clock();
