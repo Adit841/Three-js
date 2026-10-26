@@ -2,6 +2,7 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import GUI from "lil-gui";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 
 
@@ -33,9 +34,35 @@ const size = {
 // scene
 const scene = new THREE.Scene();
 
+
+
+const gltfLoader = new GLTFLoader();
+
+let soldier = null;
+ gltfLoader.load(
+  "/Soldier.glb",
+  (gltf) => {
+    scene.add(gltf.scene);
+    console.log("GLTF model loaded successfully");
+  },
+  () => {
+    console.log("GLTF model is loading...");
+  },
+  (error) => {
+    console.error("GLTF model failed to load:", error);
+  }
+);
+
 // const clock = new THREE.Clock();
 
 const timer =  new THREE.Clock();
+
+// Lights
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 10);
+directionalLight.position.set(1, 1, 1 );
 
 // 3D-object - mesh
 
@@ -61,15 +88,16 @@ const geometry = new THREE.BoxGeometry(1, 1, 1);
 
 
 // material
-const material = new THREE.MeshBasicMaterial({ map: clothTexture });
+const material = new THREE.MeshStandardMaterial({ map: clothTexture });
 
 // mesh
 const cube = new THREE.Mesh(geometry, material);
 // gui.add(cube.position, "x").min(-3).max(3).step(0.01).name("cubeX");
 // gui.add(cube.position, "y").min(-3).max(3).step(0.01).name("cubeY");
 // gui.add(cube.position, "z").min(-3).max(3).step(0.01).name("cubeZ");  
-scene.add(cube); 
-
+// scene.add(cube); 
+scene.add(ambientLight);
+scene.add(directionalLight);
 // gui.add(cube, "visible");
 
 // gui.add(material, "wireframe");
@@ -133,8 +161,11 @@ function animate() {
   // timer.update();
   controls.update();
   const delta = timer.getDelta();
-  cube.rotation.x += delta;
-  cube.rotation.y += delta;
+ 
+  if (soldier) {
+    soldier.rotation.y += delta;
+  }
+
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }
