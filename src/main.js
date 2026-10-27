@@ -4,6 +4,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import GUI from "lil-gui";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { HDRLoader } from "three/addons/loaders/HDRLoader.js";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
 const gui = new GUI();
 
@@ -134,6 +135,22 @@ let mixer = null;
 // );
 
 
+// const rgbeLoader = new RGBELoader();
+const hdrLoader = new HDRLoader();
+hdrLoader.load(
+  "/env_map.hdr",
+  (texture) => {
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    scene.environment = texture;
+    scene.background = texture;
+    console.log("HDR environment applied successfully!");
+  },
+  undefined,
+  (error) => {
+    console.error("HDR loading failed:", error);
+  },
+);
+
 
 const cameraRotationSpeed = 0.5; // Adjust this value to control the rotation speed
 window.addEventListener("keydown", (event) => {
@@ -205,10 +222,10 @@ const cube = new THREE.Mesh(geometry, material);
 // gui.add(cube.position, "x").min(-3).max(3).step(0.01).name("cubeX");
 // gui.add(cube.position, "y").min(-3).max(3).step(0.01).name("cubeY");
 // gui.add(cube.position, "z").min(-3).max(3).step(0.01).name("cubeZ");
-// scene.add(cube);
+scene.add(cube);
 scene.add(ambientLight);
 scene.add(directionalLight);
-// gui.add(cube, "visible");
+gui.add(cube, "visible"); 
 
 // gui.add(material, "wireframe");
 
@@ -249,32 +266,32 @@ renderer.setSize(size.width, size.height);
 
 
 // Environment Map
-const hdrLoader = new HDRLoader();
+// const hdrLoader = new HDRLoader();
 
-const pmremGenerator = new THREE.PMREMGenerator(renderer);
-pmremGenerator.compileEquirectangularShader();
+// const pmremGenerator = new THREE.PMREMGenerator(renderer);
+// pmremGenerator.compileEquirectangularShader();
 
-hdrLoader.load(
-  "/env_map.hdr",
-  (hdrTexture) => {
-    const envRenderTarget =
-      pmremGenerator.fromEquirectangular(hdrTexture);
+// hdrLoader.load(
+//   "/env_map.hdr",
+//   (hdrTexture) => {
+//     const envRenderTarget =
+//       pmremGenerator.fromEquirectangular(hdrTexture);
 
-    scene.environment = envRenderTarget.texture;
-    scene.background = hdrTexture;
+//     scene.environment = envRenderTarget.texture;
+//     scene.background = hdrTexture;
 
-    hdrTexture.dispose();
-    pmremGenerator.dispose();
+//     hdrTexture.dispose();
+//     pmremGenerator.dispose();
 
-    console.log("HDR environment applied successfully!");
+//     console.log("HDR environment applied successfully!");
     
-  },
-  undefined,
-  (error) => {
-    console.error("HDR loading failed:", error);
-    pmremGenerator.dispose();
-  }
-);
+//   },
+//   undefined,
+//   (error) => {
+//     console.error("HDR loading failed:", error);
+//     pmremGenerator.dispose();
+//   }
+// );
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
