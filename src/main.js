@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import GUI from "lil-gui";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { HDRLoader } from "three/addons/loaders/HDRLoader.js";
 
 const gui = new GUI();
 
@@ -38,99 +39,101 @@ const gltfLoader = new GLTFLoader();
 
 let mixer = null;
 
-let soldier = null;
-gltfLoader.load(
-  "/Soldier.glb",
-  (gltf) => {
-    soldier = gltf.scene;
-    console.log(gltf.animations);
-    if (gltf.animations && gltf.animations.length > 0) {
-      mixer = new THREE.AnimationMixer(soldier);
-      const action = mixer.clipAction(gltf.animations[3]);
-      action.play();
-    }
-    soldier.scale.set(1, 1, 1);
-    soldier.position.set(0, -1, 0);
-    soldier.rotation.y = Math.PI;
-    scene.add(soldier);
+// let soldier = null;
+// gltfLoader.load(
+//   "/Soldier.glb",
+//   (gltf) => {
+//     soldier = gltf.scene;
+//     console.log(gltf.animations);
+//     if (gltf.animations && gltf.animations.length > 0) {
+//       mixer = new THREE.AnimationMixer(soldier);
+//       const action = mixer.clipAction(gltf.animations[3]);
+//       action.play();
+//     }
+//     soldier.scale.set(1, 1, 1);
+//     soldier.position.set(0, -1, 0);
+//     soldier.rotation.y = Math.PI;
+//     scene.add(soldier);
 
-    mixer = new THREE.AnimationMixer(soldier);
-    const animations = {
-      walk: gltf.animations.find((clip) =>
-        clip.name.toLowerCase().includes("walk"),
-      ),
-      run: gltf.animations.find((clip) =>
-        clip.name.toLowerCase().includes("run"),
-      ),
-      tpose: gltf.animations.find(
-        (clip) =>
-          clip.name.toLowerCase().includes("tpose") ||
-          clip.name.toLowerCase().includes("t-pose"),
-      ),
-      idle: gltf.animations.find((clip) =>
-        clip.name.toLowerCase().includes("idle"),
-      ),
-    };
+//     mixer = new THREE.AnimationMixer(soldier);
+//     const animations = {
+//       walk: gltf.animations.find((clip) =>
+//         clip.name.toLowerCase().includes("walk"),
+//       ),
+//       run: gltf.animations.find((clip) =>
+//         clip.name.toLowerCase().includes("run"),
+//       ),
+//       tpose: gltf.animations.find(
+//         (clip) =>
+//           clip.name.toLowerCase().includes("tpose") ||
+//           clip.name.toLowerCase().includes("t-pose"),
+//       ),
+//       idle: gltf.animations.find((clip) =>
+//         clip.name.toLowerCase().includes("idle"),
+//       ),
+//     };
 
-    console.log(
-      "Available animations:",
-      gltf.animations.map((clip) => clip.name),
-    );
-    console.log("Animation map:", animations);
+//     console.log(
+//       "Available animations:",
+//       gltf.animations.map((clip) => clip.name),
+//     );
+//     console.log("Animation map:", animations);
 
-    let currentAction = null;
-    function playAnimation(name) {
-      const clip = animations[name];
-      if (!clip) {
-        console.warn(`Animation "${name}" not found.`);
-        return;
-      }
-      const newAction = mixer.clipAction(clip);
-      if (currentAction == newAction) {
-        return;
-      }
-      newAction.reset();
-      newAction.play();
-      newAction.setEffectiveTimeScale(1);
-      newAction.setEffectiveWeight(1);
+//     let currentAction = null;
+//     function playAnimation(name) {
+//       const clip = animations[name];
+//       if (!clip) {
+//         console.warn(`Animation "${name}" not found.`);
+//         return;
+//       }
+//       const newAction = mixer.clipAction(clip);
+//       if (currentAction == newAction) {
+//         return;
+//       }
+//       newAction.reset();
+//       newAction.play();
+//       newAction.setEffectiveTimeScale(1);
+//       newAction.setEffectiveWeight(1);
 
-      if (currentAction) {
-        currentAction.crossFadeTo(newAction, 0.5, false);
-      }
+//       if (currentAction) {
+//         currentAction.crossFadeTo(newAction, 0.5, false);
+//       }
 
-      currentAction = newAction;
-      console.log(`Playing animation: ${name}`);
-    }
-    playAnimation("idle");
+//       currentAction = newAction;
+//       console.log(`Playing animation: ${name}`);
+//     }
+//     playAnimation("idle");
 
-    window.addEventListener("keydown", (event) => {
-      switch (event.key.toLowerCase()) {
-        case "w":
-          playAnimation("walk");
-          break;
-        case "r":
-          playAnimation("run");
-          break;
-        case "t":
-          playAnimation("tpose");
-          break;
-        case "i":
-          playAnimation("idle");
-          break;
-        default:
-          console.log(`No animation mapped for key: ${event.key}`);
-      }
-    });
+//     window.addEventListener("keydown", (event) => {
+//       switch (event.key.toLowerCase()) {
+//         case "w":
+//           playAnimation("walk");
+//           break;
+//         case "r":
+//           playAnimation("run");
+//           break;
+//         case "t":
+//           playAnimation("tpose");
+//           break;
+//         case "i":
+//           playAnimation("idle");
+//           break;
+//         default:
+//           console.log(`No animation mapped for key: ${event.key}`);
+//       }
+//     });
 
-    console.log("GLTF model loaded successfully");
-  },
-  () => {
-    console.log("GLTF model is loading...");
-  },
-  (error) => {
-    console.error("GLTF model failed to load:", error);
-  },
-);
+//     console.log("GLTF model loaded successfully");
+//   },
+//   () => {
+//     console.log("GLTF model is loading...");
+//   },
+//   (error) => {
+//     console.error("GLTF model failed to load:", error);
+//   },
+// );
+
+
 
 const cameraRotationSpeed = 0.5; // Adjust this value to control the rotation speed
 window.addEventListener("keydown", (event) => {
@@ -243,6 +246,35 @@ const canvas = document.querySelector("#webgl");
 
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(size.width, size.height);
+
+
+// Environment Map
+const hdrLoader = new HDRLoader();
+
+const pmremGenerator = new THREE.PMREMGenerator(renderer);
+pmremGenerator.compileEquirectangularShader();
+
+hdrLoader.load(
+  "/env_map.hdr",
+  (hdrTexture) => {
+    const envRenderTarget =
+      pmremGenerator.fromEquirectangular(hdrTexture);
+
+    scene.environment = envRenderTarget.texture;
+    scene.background = hdrTexture;
+
+    hdrTexture.dispose();
+    pmremGenerator.dispose();
+
+    console.log("HDR environment applied successfully!");
+    
+  },
+  undefined,
+  (error) => {
+    console.error("HDR loading failed:", error);
+    pmremGenerator.dispose();
+  }
+);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
