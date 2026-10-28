@@ -136,20 +136,20 @@ let mixer = null;
 
 
 // const rgbeLoader = new RGBELoader();
-const hdrLoader = new HDRLoader();
-hdrLoader.load(
-  "/env_map.hdr",
-  (texture) => {
-    texture.mapping = THREE.EquirectangularReflectionMapping;
-    scene.environment = texture;
-    scene.background = texture;
-    console.log("HDR environment applied successfully!");
-  },
-  undefined,
-  (error) => {
-    console.error("HDR loading failed:", error);
-  },
-);
+// const hdrLoader = new HDRLoader();
+// hdrLoader.load(
+//   "/env_map.hdr",
+//   (texture) => {
+//     texture.mapping = THREE.EquirectangularReflectionMapping;
+//     scene.environment = texture;
+//     scene.background = texture;
+//     console.log("HDR environment applied successfully!");
+//   },
+//   undefined,
+//   (error) => {
+//     console.error("HDR loading failed:", error);
+//   },
+// );
 
 
 const cameraRotationSpeed = 0.5; // Adjust this value to control the rotation speed
@@ -197,7 +197,9 @@ directionalLight.position.set(1, 1, 1);
 // 3D-object - mesh
 
 // geometry
-const geometry = new THREE.BoxGeometry(1, 1, 1);
+// const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+const geometry = new THREE.PlaneGeometry(1,1,8,8);
 
 // const plane = new THREE.Plane( new THREE.Vector3( 1, 1, 0.2 ), 3 );
 // const helper = new THREE.PlaneHelper( plane, 1, 0xffff00 );
@@ -215,7 +217,26 @@ const geometry = new THREE.BoxGeometry(1, 1, 1);
 // geometry.setAttribute("position", new THREE.BufferAttribute(positionArray, 3));
 
 // material
-const material = new THREE.MeshStandardMaterial({ map: clothTexture });
+// const material = new THREE.MeshStandardMaterial({ map: clothTexture });
+
+const vertex = `
+    void main(){
+    vec3 newPosition = position;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+    }
+`
+const fragment = `
+    void main(){
+      gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+`
+
+const material = new THREE.ShaderMaterial({
+  vertexShader: vertex,
+  fragmentShader: fragment,
+  side: THREE.DoubleSide,
+  
+});
 
 // mesh
 const cube = new THREE.Mesh(geometry, material);
